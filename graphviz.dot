@@ -1,0 +1,15 @@
+digraph profile {
+Legend [shape=box,fontsize=24,shape=plaintext,label="
+Total samples: 32641643\lShowing top 120 nodes\lDropped nodes with < 163209 samples\l"];
+  "47341686436060" [size=2.5] [fontsize=10.000002379074308] [penwidth="2.5"] [shape=box] [label="block in <main>\n2 (0.0%)\rof 32641643 (100.0%)\r"];
+  "47341686436240" [size=2.5] [fontsize=10.0] [penwidth="2.5"] [shape=box] [label="<main>\n0 (0.0%)\rof 32641643 (100.0%)\r"];
+  "47341684570620" [size=2.5] [fontsize=10.0] [penwidth="2.5"] [shape=box] [label="<main>\n0 (0.0%)\rof 32641643 (100.0%)\r"];
+  "47341685191080" [size=2.4999998774571486] [fontsize=38.0] [penwidth="2.4999998774571486"] [shape=box] [label="Object#work\n23538567 (72.1%)\rof 32641641 (100.0%)\r"];
+  "47341685191320" [size=1.0577583211727424] [fontsize=20.82844473922308] [penwidth="1.0577583211727424"] [shape=box] [label="Object#report_user\n9103074 (27.9%)\r"];
+  "47341686436060" -> "47341685191080" [label="32641641"] [weight="32641641"] [penwidth="2.4999998774571486"];
+  "47341686436240" -> "47341686436060" [label="32641643"] [weight="32641643"] [penwidth="2.5"];
+  "47341684570620" -> "47341686436240" [label="32641643"] [weight="32641643"] [penwidth="2.5"];
+  "47341685191080" -> "47341685191080" [label="32641573"] [weight="32641573"] [penwidth="2.499995711000209"];
+  "47341685191080" -> "47341685191320" [label="9103074"] [weight="9103074"] [penwidth="1.0577583211727424"];
+  "47341685191320" -> "47341685191320" [label="957772"] [weight="957772"] [penwidth="0.5586840558240282"];
+}
