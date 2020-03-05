@@ -2,12 +2,12 @@
 # dot -Tpng graphviz.dot > graphviz.png
 
 require 'ruby-prof'
-require_relative 'bad_work.rb'
+require_relative 'work.rb'
 
 RubyProf.measure_mode = RubyProf::ALLOCATIONS
 
 result = RubyProf.profile do
-  work('data1000.txt', disable_gc: true)
+  work('data10000.txt', disable_gc: true)
 end
 
 printer = RubyProf::FlatPrinter.new(result)

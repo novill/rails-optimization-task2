@@ -1,12 +1,19 @@
-require 'json'
+USER = 'user,'
+COMMA = ','
+COMMA_SPACE = ', '
+TRUES = 'true'
+FALSES = 'false'
+IE = 'INTERNET EXPLORER'
+CHROME = 'CHROME'
+ES = ''
+SPACE = ' '
 
 def report_user(user, sessions)
 
   browsers, times, dates = sessions.transpose
 
-  File.write("result.json",
-             "#{@user_count > 0 ? ',' : ''}\"#{user}\":{\"sessionsCount\":#{sessions.size},\"totalTime\":\"#{times.sum} min.\",\"longestSession\":\"#{times.max} min.\",\"browsers\":\"#{browsers.sort.join(', ')}\",\"usedIE\":#{browsers.any?{ |b| b.start_with?('INTERNET EXPLORER') }},\"alwaysUsedChrome\":#{browsers.all?{ |b| b.start_with?('CHROME') }},\"dates\":#{dates.sort.reverse}}",
-             mode: "a")
+  @output.write(
+             "#{@user_count > 0 ? COMMA : ES}\"#{user}\":{\"sessionsCount\":#{sessions.size},\"totalTime\":\"#{times.sum} min.\",\"longestSession\":\"#{times.max} min.\",\"browsers\":\"#{browsers.sort.join(COMMA_SPACE)}\",\"usedIE\":#{browsers.any?{ |b| b.start_with?(IE) } ? TRUES : FALSES},\"alwaysUsedChrome\":#{browsers.all?{ |b| b.start_with?(CHROME) }  ? TRUES : FALSES},\"dates\":#{dates.sort.reverse}}")
   @user_count += 1
   @session_count += sessions.size
   @unique_browsers += browsers
@@ -20,41 +27,38 @@ def work(source_data_file = 'data.txt', disable_gc = false)
   @session_count = 0
   @user_count = 0
   @unique_browsers = []
-  File.write("result.json", '{"usersStats":{') #, mode: "a"
+  @output = File.open('result.json', mode: 'w+')
+
+  @output.write('{"usersStats":{') #, mode: "a"
+
+  user = ES
+  sessions = []
 
   File.open(source_data_file, 'r') do |f|
-    user = ''
-    sessions = []
-    while line = f.gets # line = lines[i]; i += 1; line
-      if line[0..3] == 'user'
+    while line = f.gets
+      if line.start_with?(USER)
         report_user(user, sessions) unless sessions.empty?
-        user = line.split(',')[2..3].join(' ')
+        line[0..5] = ES
+        user = line.split(COMMA)[1..2].join(SPACE)
         sessions = []
       else
-        browser, time, date = *line.split(',')[3..5]
+        line[0..7] = ES
+        browser, time, date = *line.split(COMMA)[2..4]
         sessions << [browser.upcase, time.to_i, date.strip]
       end
     end
     report_user(user, sessions) unless sessions.empty?
   end
-  File.write("result.json", '},', mode: "a")
+  @output.write('},')
 
-  report = {}
-
-  report[:totalUsers] = @user_count
-
-  report['uniqueBrowsersCount'] = @unique_browsers.size
-
-  report['totalSessions'] = @session_count
-
-  report['allBrowsers'] = @unique_browsers.sort.join(',')
-
-  File.write('result.json', "#{report.to_json[1..-1]}\n", mode: 'a')
-  puts "MEMORY USAGE: %d MB" % (`ps -o rss= -p #{Process.pid}`.to_i/1024)
+  @output.write(
+             "\"totalUsers\":#{@user_count}, \"uniqueBrowsersCount\":#{@unique_browsers.size}, \"totalSessions\":#{@session_count}, \"allBrowsers\":\"#{@unique_browsers.sort.join(COMMA)}\"}\n")
+  @output.close
+  puts "MEMORY USAGE: %d KB" % (`ps -o rss= -p #{Process.pid}`.to_i)
 end
 
-time1 = Time.now.to_i
-
-ARGV[0] ? work(ARGV[0]) : work
-
-puts "Work time: %d s" % (Time.now.to_i - time1.to_i)
+# time1 = Time.now.to_i
+#
+# ARGV[0] ? work(ARGV[0]) : work
+#
+# puts "Work time: %d s" % (Time.now.to_i - time1.to_i)
